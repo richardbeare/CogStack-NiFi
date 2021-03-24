@@ -58,7 +58,7 @@ def parseJsonToAvro(inJson, avroSchema) {
     assert inJson.containsKey('doc_id')
     def docIdValue = null
     try {
-        docIdValue = Integer.parseInt(inJson['doc_id'])
+        docIdValue = Integer.parseInt(String.valueOf(inJson['doc_id']))
     }
     catch (Exception e) {
         docIdValue = new org.apache.avro.util.Utf8(inJson['doc_id'])
@@ -76,7 +76,7 @@ def parseJsonToAvro(inJson, avroSchema) {
     //
     assert inJson.containsKey('metadata')
     if (inJson.metadata.containsKey('X-OCR-Applied'))
-        docRecord.put("metadata_x_ocr_applied", Boolean.parseBoolean(inJson.metadata['X-OCR-Applied']))
+        docRecord.put("metadata_x_ocr_applied", Boolean.parseBoolean(String.valueOf(inJson.metadata['X-OCR-Applied'])))
 
     if (inJson.metadata.containsKey('X-Parsed-By'))
         docRecord.put("metadata_x_parsed_by", new org.apache.avro.util.Utf8(String.join(";", inJson.metadata['X-Parsed-By'])))
@@ -85,7 +85,7 @@ def parseJsonToAvro(inJson, avroSchema) {
     // optional metadata fields
     //
     if (inJson.metadata.containsKey('Page-Count'))
-        docRecord.put("metadata_page_count", Integer.parseInt(inJson.metadata['Page-Count']))
+        docRecord.put("metadata_page_count", Integer.parseInt(String.valueOf(inJson.metadata['Page-Count'])))
 
     if (inJson.metadata.containsKey('Content-Type'))
         docRecord.put("metadata_content_type", new org.apache.avro.util.Utf8(inJson.metadata['Content-Type']))
@@ -120,3 +120,4 @@ flowFile = session.write(flowFile, { inputStream, outputStream ->
 
 // transfer the seesions file
 session.transfer(flowFile, REL_SUCCESS)
+
