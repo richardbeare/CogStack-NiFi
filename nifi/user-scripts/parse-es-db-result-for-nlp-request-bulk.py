@@ -51,7 +51,7 @@ class PyStreamCallback(StreamCallback):
                     out_record["footer"][k] = v
         
             if DOCUMENT_ID_FIELD_NAME == "_id" and FIELD_TO_CHECK is not None:
-                out_record["id"] = record["_id"]
+                out_record["id"] = _record["_id"]
             else:
                 if DOCUMENT_ID_FIELD_NAME in _record.keys():
                     out_record["id"] = _record[DOCUMENT_ID_FIELD_NAME]
@@ -101,5 +101,9 @@ if flowFile != None:
             else:
                 with open(log_file_path, "w+") as log_file:
                     log_file.write(_out_list)
-else:
-    session.transfer(flowFile, REL_FAILURE)
+# Don't transfer flowfile when it is None.
+# Flowfile can be none when the ExecuteScript processor
+# is configured for multiple concurrent tasks, and leads
+# to a crash.
+#else:
+#    session.transfer(flowFile, REL_FAILURE)
